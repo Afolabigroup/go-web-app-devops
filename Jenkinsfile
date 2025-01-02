@@ -52,7 +52,7 @@ pipeline {
                 sh 'golangci-lint run'
             }
         }
-        
+        /*
         stage('Docker Build and Push') {
             steps {
                 script {
@@ -66,7 +66,17 @@ pipeline {
                 }
             }
         }
+        */
 
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+        
         stage('Update Helm Chart Tag') {
             environment {
                 GIT_REPO_NAME = "go-web-app-devops"
