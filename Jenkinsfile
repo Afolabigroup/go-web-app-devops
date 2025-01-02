@@ -17,9 +17,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'docker-cred-id' // Jenkins credentials for DockerHub
-        DOCKERHUB_USERNAME = 'your-dockerhub-username'
-        GIT_CREDENTIALS_ID = 'git-cred-id' // Jenkins credentials for Git
+        DOCKER_CREDENTIALS_ID = 'docker-cred' // Jenkins credentials for DockerHub
+        DOCKERHUB_USERNAME = 'labi007'
+        GIT_CREDENTIALS_ID = 'git' // Jenkins credentials for Git
     }
 
     tools {
