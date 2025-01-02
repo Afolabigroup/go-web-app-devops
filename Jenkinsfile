@@ -80,7 +80,7 @@ pipeline {
             steps {
                 script {
                   // sh ' docker build -t ${DOCKER_IMAGE} .'
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                    docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
                        // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
                         //def dockerImage = docker.build("${DOCKER_IMAGE}")
 
