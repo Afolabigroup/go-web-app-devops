@@ -15,7 +15,10 @@
 
 pipeline {
     agent any
-
+    
+    tools {
+        go 'Go 1.22' // Ensure Go is configured in Jenkins global tool configuration
+    }
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-cred' // Jenkins credentials for DockerHub
         DOCKERHUB_USERNAME = 'labi007'
@@ -23,10 +26,6 @@ pipeline {
         GO_APP_NAME = 'my-go-app'
         DOCKER_IMAGE = "${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${BUILD_NUMBER}"
         REGISTRY_CREDENTIALS = 'docker-cred' // Replace with your Jenkins credential ID
-    }
-
-    tools {
-        go 'Go 1.22' // Ensure Go is configured in Jenkins global tool configuration
     }
 
     stages {
@@ -69,9 +68,10 @@ pipeline {
         }
 
         stage('Update Helm Chart Tag') {
-             environment {
+            environment {
                 GIT_REPO_NAME = "go-web-app-devops"
                 GIT_USER_NAME = "Afolabigroup"
+            }
             steps {
                 script {
                     sh '''
@@ -85,13 +85,9 @@ pipeline {
                 }
             }
         }
-    
+        
         
     }
-
-    post {
-        always {
-            cleanWs() // Clean up workspace after build
-        }
-    }
+    
+    
 }
