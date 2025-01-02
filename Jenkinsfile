@@ -20,6 +20,9 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker-cred' // Jenkins credentials for DockerHub
         DOCKERHUB_USERNAME = 'labi007'
         GIT_CREDENTIALS_ID = 'git' // Jenkins credentials for Git
+        GO_APP_NAME = 'my-go-app'
+        DOCKER_IMAGE = "${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${BUILD_NUMBER}"
+        REGISTRY_CREDENTIALS = 'docker-cred' // Replace with your Jenkins credential ID
     }
 
     tools {
@@ -55,7 +58,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        def dockerImage = docker.build("${DOCKERHUB_USERNAME}/go-web-app:${env.BUILD_NUMBER}")
+                       // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
+                        def dockerImage = docker.build("${DOCKER_IMAGE}")
+
                         dockerImage.push()
                     }
                 }
