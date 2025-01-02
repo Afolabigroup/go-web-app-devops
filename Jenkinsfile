@@ -57,6 +57,7 @@ pipeline {
         stage('Docker Build and Push') {
             steps {
                 script {
+                  // sh ' docker build -t ${DOCKER_IMAGE} .'
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                        // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
                         def dockerImage = docker.build("${DOCKER_IMAGE}")
@@ -68,12 +69,15 @@ pipeline {
         }
 
         stage('Update Helm Chart Tag') {
+             environment {
+                GIT_REPO_NAME = "go-web-app-devops"
+                GIT_USER_NAME = "Afolabigroup"
             steps {
                 script {
                     sh '''
+                    git config user.email "Afolabiewuola@gmail.com"
+                    git config user.name "Ewuola1"
                     sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" helm/go-web-app-chart/values.yaml
-                    git config user.email "your-email@example.com"
-                    git config user.name "Your Name"
                     git add helm/go-web-app-chart/values.yaml
                     git commit -m "Update tag in Helm chart"
                     git push
