@@ -20,7 +20,7 @@ pipeline {
         go 'Go 1.22' // Ensure Go is configured in Jenkins global tool configuration
     }
     environment {
-        DOCKER_CREDENTIALS_ID = credentials('docker-cred') // Jenkins credentials for DockerHub
+        DOCKER_CREDENTIALS_ID ='docker-cred') // Jenkins credentials for DockerHub
         DOCKERHUB_USERNAME = 'labi007'
         GIT_CREDENTIALS_ID = 'git' // Jenkins credentials for Git
         GO_APP_NAME = 'my-go-app'
