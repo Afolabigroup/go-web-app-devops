@@ -76,7 +76,19 @@ pipeline {
                 }
             }
         }
-        
+         stage('Push') {
+            steps {
+                script {
+                  // sh ' docker build -t ${DOCKER_IMAGE} .'
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                       // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
+                        //def dockerImage = docker.build("${DOCKER_IMAGE}")
+
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
         stage('Update Helm Chart Tag') {
             environment {
                 GIT_REPO_NAME = "go-web-app-devops"
