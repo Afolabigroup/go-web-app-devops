@@ -88,7 +88,7 @@ pipeline {
                     sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" helm/go-web-app-chart/values.yaml
                     git add helm/go-web-app-chart/values.yaml
                     git commit -m "Update tag in Helm chart"
-                    git push
+                    git push HEAD:master
                     '''
                 }
             }
