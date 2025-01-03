@@ -38,22 +38,29 @@ pipeline {
             }
         }
         
-       stage('Build and Push Docker Image') {
+        stage('Build and Push Docker Image') {
             environment {
-             //DOCKER_IMAGE = "labi007/java-test-app:${BUILD_NUMBER}"
-            // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
-            REGISTRY_CREDENTIALS = credentials('docker-cred') // add this to the Jenkins credential
-          }
-                steps {
+                    //DOCKER_IMAGE = "labi007/java-test-app:${BUILD_NUMBER}" // Dynamic image name with build number
+                // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile" // Dockerfile location
+                    REGISTRY_CREDENTIALS = credentials('docker-cred') // Jenkins credential ID for Docker registry
+                }
+            steps {
                 script {
-                    sh 'docker build -t ${DOCKER_IMAGE} .'
+                    // Build the Docker image
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    
+                    // Create a Docker image object
                     def dockerImage = docker.image("${DOCKER_IMAGE}")
+                    
+                    // Push the image to the Docker registry
                     docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
                         dockerImage.push()
                     }
                 }
-              }
             }
+        }
+    
+
         stage('Update Helm Chart Tag') {
             environment {
                 GIT_REPO_NAME = "go-web-app-devops"
