@@ -5,12 +5,12 @@ pipeline {
         go 'Go 1.22' // Ensure Go is configured in Jenkins global tool configuration
     }
     environment {
-        DOCKER_CREDENTIALS_ID = 'docker-red' // Jenkins credentials for DockerHub
+        DOCKER_CREDENTIALS_ID ='docker-cred' // Jenkins credentials for DockerHub
         DOCKERHUB_USERNAME = 'labi007'
         GIT_CREDENTIALS_ID = 'git' // Jenkins credentials for Git
         GO_APP_NAME = 'my-go-app'
         DOCKER_IMAGE = "${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${BUILD_NUMBER}"
-        REGISTRY_CREDENTIALS = 'docker-red' // Replace with your Jenkins credential ID
+        REGISTRY_CREDENTIALS = 'docker-cred' // Replace with your Jenkins credential ID
     }
 
     stages {
@@ -37,14 +37,37 @@ pipeline {
                 sh 'golangci-lint run'
             }
         }
-        
+        /*
         stage('Docker Build and Push') {
             steps {
                 script {
                   // sh ' docker build -t ${DOCKER_IMAGE} .'
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}'') {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                        // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
                         def dockerImage = docker.build("${DOCKER_IMAGE}")
+
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+        */
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+         stage('Push') {
+            steps {
+                script {
+                  // sh ' docker build -t ${DOCKER_IMAGE} .'
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                       // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
+                        //def dockerImage = docker.build("${DOCKER_IMAGE}")
 
                         dockerImage.push()
                     }
