@@ -5,7 +5,7 @@ pipeline {
         go 'Go 1.22' // Ensure Go is configured in Jenkins global tool configuration
     }
     environment {
-        DOCKER_CREDENTIALS_ID ='docker-cred' // Jenkins credentials for DockerHub
+        DOCKER_CREDENTIALS_ID = 'docker-red' // Jenkins credentials for DockerHub
         DOCKERHUB_USERNAME = 'labi007'
         GIT_CREDENTIALS_ID = 'git' // Jenkins credentials for Git
         GO_APP_NAME = 'my-go-app'
@@ -38,28 +38,19 @@ pipeline {
             }
         }
         
-        stage('Build and Push Docker Image') {
-            environment {
-                    //DOCKER_IMAGE = "labi007/java-test-app:${BUILD_NUMBER}" // Dynamic image name with build number
-                // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile" // Dockerfile location
-                    REGISTRY_CREDENTIALS = credentials('docker-cred') // Jenkins credential ID for Docker registry
-                }
+        stage('Docker Build and Push') {
             steps {
                 script {
-                    // Build the Docker image
-                    sh "docker build -t ${DOCKER_IMAGE} ."
-                    
-                    // Create a Docker image object
-                    def dockerImage = docker.image("${DOCKER_IMAGE}")
-                    
-                    // Push the image to the Docker registry
-                    docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+                  // sh ' docker build -t ${DOCKER_IMAGE} .'
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}'') {
+                       // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
+                        def dockerImage = docker.build("${DOCKER_IMAGE}")
+
                         dockerImage.push()
                     }
                 }
             }
         }
-    
 
         stage('Update Helm Chart Tag') {
             environment {
