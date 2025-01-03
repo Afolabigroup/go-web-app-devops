@@ -5,12 +5,12 @@ pipeline {
         go 'Go 1.22' // Ensure Go is configured in Jenkins global tool configuration
     }
     environment {
-        DOCKER_CREDENTIALS_ID ='docker-cred' // Jenkins credentials for DockerHub
+        DOCKER_CREDENTIALS_ID ='docker-red' // Jenkins credentials for DockerHub
         DOCKERHUB_USERNAME = 'labi007'
         GIT_CREDENTIALS_ID = 'git' // Jenkins credentials for Git
         GO_APP_NAME = 'my-go-app'
         DOCKER_IMAGE = "${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${BUILD_NUMBER}"
-        REGISTRY_CREDENTIALS = 'docker-cred' // Replace with your Jenkins credential ID
+        REGISTRY_CREDENTIALS = 'docker-red' // Replace with your Jenkins credential ID
     }
 
     stages {
