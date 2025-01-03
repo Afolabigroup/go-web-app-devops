@@ -1,18 +1,3 @@
-/*pipeline {
-    agent any
-    tools {
-        go 'Go 1.22' // Make sure to configure this Go version in "Global Tool Configuration"
-    }
-    stages {
-        stage('Build') {
-            steps {
-                sh 'go build -o go-web-app'
-            }
-        }
-    }
-}
-*/
-
 pipeline {
     agent any
     
@@ -52,47 +37,23 @@ pipeline {
                 sh 'golangci-lint run'
             }
         }
-        /*
-        stage('Docker Build and Push') {
-            steps {
+        
+       stage('Build and Push Docker Image') {
+            environment {
+             //DOCKER_IMAGE = "labi007/java-test-app:${BUILD_NUMBER}"
+            // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
+            REGISTRY_CREDENTIALS = credentials('docker-cred') // add this to the Jenkins credential
+          }
+                steps {
                 script {
-                  // sh ' docker build -t ${DOCKER_IMAGE} .'
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                       // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
-                        def dockerImage = docker.build("${DOCKER_IMAGE}")
-
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
-       
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build the Docker image
-                    sh "docker build -t ${DOCKER_IMAGE} ."
-                }
-            }
-        }
-         */
-         stage('Push') {
-            steps {
-                script {
-                    sh ' docker build -t ${DOCKER_IMAGE} .'
-                   // docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+                    sh 'docker build -t ${DOCKER_IMAGE} .'
                     def dockerImage = docker.image("${DOCKER_IMAGE}")
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                    docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
                         dockerImage.push()
-                       // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
-                        //def dockerImage = docker.build("${DOCKER_IMAGE}")
-                      //  def dockerImage = docker.image("${DOCKER_IMAGE}")
-                        //  dockerImage.push()
                     }
                 }
+              }
             }
-        }
         stage('Update Helm Chart Tag') {
             environment {
                 GIT_REPO_NAME = "go-web-app-devops"
