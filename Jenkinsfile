@@ -81,14 +81,14 @@ pipeline {
                 GIT_USER_NAME = "Afolabigroup"
             }
             steps {
-                script {
+                withCredentials([string(credentialsId: 'git', variable: 'GITHUB_TOKEN')]){
                     sh '''
                     git config user.email "Afolabiewuola@gmail.com"
                     git config user.name "Ewuola1"
                     sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" helm/go-web-app-chart/values.yaml
                     git add helm/go-web-app-chart/values.yaml
                     git commit -m "Update tag in Helm chart"
-                    git push HEAD:master
+                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:master
                     '''
                 }
             }
