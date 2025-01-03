@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                   // sh ' docker build -t ${DOCKER_IMAGE} .'
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-red') {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID ) {
                        // def dockerImage = docker.build("${DOCKERHUB_USERNAME}/${GO_APP_NAME}:${env.BUILD_NUMBER}")
                         //def dockerImage = docker.build("${DOCKER_IMAGE}")
                      def dockerImage = docker.image("${DOCKER_IMAGE}")
