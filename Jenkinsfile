@@ -34,7 +34,7 @@ pipeline {
         
         stage('Code Quality') {
             steps {
-                sh 'golangci-lint run'
+                sh 'golangci-lint run'  // ensure 'golangci-lint run is installed
             }
         }
         /*
